@@ -1,7 +1,6 @@
 # Corso di Programmazione di Reti - Laboratorio - Universit�  di Bologna
 # Socket_Programming_Assignment - WebServer - F. Callegati - G.Pau - A. Piroddi
 
-import sys
 from socket import * 
 import os
 serverPort=8080
@@ -27,13 +26,14 @@ while True:
 
         message = connectionSocket.recv(1024)
         if len(message.split())>0: 
-            print (message,'::',message.split()[0],':',message.split()[1]) 
-            #filename = message.split()[1] 
-            filename = '/index.html'
+            print (message.split()[0],':',message.split()[1]) 
+            filename = message.split()[1].decode()
+            #filename = '/index.html'
             filepath = os.path.join(path, filename.lstrip('/'))
             print (filename,'||',filename[1:]) 
             
-           
+            
+            print(filepath)
             f = open(filepath,'rb') 
             outputdata = f.read()
             print (outputdata) 
