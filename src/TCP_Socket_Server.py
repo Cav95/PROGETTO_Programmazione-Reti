@@ -1,6 +1,3 @@
-# Corso di Programmazione di Reti - Laboratorio - Universit�  di Bologna
-# Socket_Programming_Assignment - WebServer - F. Callegati - G.Pau - A. Piroddi
-
 from socket import * 
 import os
 serverPort=8080
@@ -8,7 +5,8 @@ serverSocket = socket(AF_INET, SOCK_STREAM)
 server_address=('localhost',serverPort)
 serverSocket.bind(server_address)
 
-path = 'www'
+script_dir = os.path.dirname(os.path.abspath(__file__))
+path = os.path.join(script_dir, 'www')
 
 #listen(1) Definisce la lunghezza della coda di backlog, ovvero il numero
 #di connessioni in entrata che sono state completate dallo stack TCP / IP
@@ -24,17 +22,22 @@ while True:
 
     try:
 
-        message = connectionSocket.recv(1024)
+        message = connectionSocket.recv(1024).decode('utf-8')
         if len(message.split())>0: 
             print (message.split()[0],':',message.split()[1]) 
-            filename = message.split()[1].decode()
-            #filename = '/index.html'
-            filepath = os.path.join(path, filename.lstrip('/'))
-            print (filename,'||',filename[1:]) 
             
+            if len(message.split()) > 1:
+                http_method = message.split()[0]
+                requested = message.split()[1]
+
+            print(f"Metodo HTTP: {http_method}, File richiesto: {requested}")
+
+            filename = requested.lstrip('/')
+            filepath = os.path.join(path, filename)
+            print (filepath,'||', filename[1:]) 
             
             print(filepath)
-            f = open(filepath,'rb') 
+            f = open(filepath,'rb')
             outputdata = f.read()
             print (outputdata) 
                 
